@@ -25,6 +25,35 @@ app.get("/vehicles", async (req, res) => {
   }
 });
 
+app.get("/vehicles/:id", async (req, res) => {
+  const vehicleId = req.params.id;
+
+  try {
+    await client.connect();
+    const database = client.db("Revenda");
+    const collection = database.collection("vehicles");
+
+    const objectId = ObjectId.isValid(vehicleId)
+      ? new ObjectId(vehicleId)
+      : vehicleId;
+
+    const vehicle = await collection.findOne({
+      _id: objectId,
+    });
+
+    if (vehicle) {
+      res.json(vehicle);
+    } else {
+      res.status(404).json({ message: "Veículo não encontrado" });
+    }
+  } catch (error) {
+    console.error("Erro ao acessar o MongoDB:", error);
+    res.status(500).json({ message: "Erro interno do servidor" });
+  } finally {
+    await client.close();
+  }
+});
+
 app.post("/vehicles", async (req, res) => {
   const newVehicle = req.body;
 
@@ -51,7 +80,7 @@ app.post("/vehicles", async (req, res) => {
   }
 });
 
-app.put("/vehicles:id", async (req, res) => {
+app.put("/vehicles/:id", async (req, res) => {
   const vehicleId = req.params.id;
   const updateVehicleData = req.body;
 
@@ -60,8 +89,12 @@ app.put("/vehicles:id", async (req, res) => {
     const database = client.db("Revenda");
     const collection = database.collection("vehicles");
 
+    const objectId = ObjectId.isValid(vehicleId)
+      ? new ObjectId(vehicleId)
+      : vehicleId;
+
     const existingVehicle = await collection.findOne({
-      _id: ObjectId(vehicleId),
+      _id: objectId,
     });
 
     if (!existingVehicle) {
@@ -69,7 +102,7 @@ app.put("/vehicles:id", async (req, res) => {
     }
 
     const result = await collection.updateOne(
-      { _id: ObjectId(vehicleId) },
+      { _id: objectId },
       { $set: updateVehicleData }
     );
 
