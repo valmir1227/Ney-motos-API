@@ -10,6 +10,7 @@ const port = 3000;
 
 const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
+
 app.use(bodyParser.json());
 
 const storage = multer.diskStorage({
@@ -32,7 +33,48 @@ app.get("/vehicles", async (req, res) => {
     const database = client.db("Revenda");
     const collection = database.collection("vehicles");
 
-    const vehicles = await collection.find({}).toArray();
+    const { marca, placa, modelo, ano, cor, status, valorMin, valorMax } =
+      req.query;
+
+    const filter = {};
+
+    if (marca) {
+      filter.marca = marca;
+    }
+
+    if (placa) {
+      filter.placa = placa;
+    }
+
+    if (modelo) {
+      filter.modelo = modelo;
+    }
+
+    if (ano) {
+      filter.ano = parseInt(ano, 10);
+    }
+
+    if (cor) {
+      filter.cor = cor;
+    }
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (valorMin && valorMax) {
+      filter.valor_venda = {
+        $gte: parseInt(valorMin, 10),
+        $lte: parseInt(valorMax, 10),
+      };
+    }
+
+    const vehicles = await collection.find(filter).toArray();
+
+    if (vehicles.length === 0) {
+      return res.status(404).send({ message: "Nenhum veículo encontrado" });
+    }
+
     res.send(vehicles);
   } catch (error) {
     console.log(error);
@@ -71,6 +113,7 @@ app.get("/vehicles/:id", async (req, res) => {
   }
 });
 
+// converter para minusculas antes de salvar no banco
 app.post("/vehicles", upload.array("images", 12), async (req, res) => {
   const newVehicle = req.body;
   const images = req.files.map((file) => file.filename);
