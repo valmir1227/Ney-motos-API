@@ -84,6 +84,61 @@ app.get("/vehicles", async (req, res) => {
   }
 });
 
+app.get("/vehicles-available", async (req, res) => {
+  try {
+    await client.connect();
+    const database = client.db("Revenda");
+    const collection = database.collection("vehicles");
+    const { marca, placa, modelo, ano, cor, status, valorMin, valorMax } =
+      req.query;
+
+    const filter = {};
+
+    if (marca) {
+      filter.marca = marca;
+    }
+
+    if (modelo) {
+      filter.modelo = modelo;
+    }
+
+    if (ano) {
+      filter.ano = parseInt(ano, 10);
+    }
+
+    if (cor) {
+      filter.cor = cor;
+    }
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (valorMin && valorMax) {
+      filter.valor_venda = {
+        $gte: parseInt(valorMin, 10),
+        $lte: parseInt(valorMax, 10),
+      };
+    }
+
+    // Adicionar o filtro para veículos disponíveis
+    filter.status = "Disponível";
+
+    const vehicles = await collection.find(filter).toArray();
+
+    if (vehicles.length === 0) {
+      return res.status(404).send({ message: "Nenhum veículo encontrado" });
+    }
+
+    res.send(vehicles);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Erro interno do servidor");
+  } finally {
+    await client.close();
+  }
+});
+
 app.get("/vehicles/:id", async (req, res) => {
   const vehicleId = req.params.id;
 
@@ -166,11 +221,28 @@ app.put("/vehicles/:id", async (req, res) => {
 
     if (!existingVehicle) {
       res.status(404).send({ message: "Veículo não encontrado" });
+      return;
     }
 
     const result = await collection.updateOne(
       { _id: objectId },
-      { $set: updateVehicleData }
+      {
+        $set: {
+          marca: updateVehicleData.marca,
+          modelo: updateVehicleData.modelo,
+          ano: updateVehicleData.ano,
+          quilometragem: updateVehicleData.quilometragem,
+          placa: updateVehicleData.placa,
+          cor: updateVehicleData.cor,
+          valor_compra: updateVehicleData.valor_compra,
+          valor_venda: updateVehicleData.valor_venda,
+          status: updateVehicleData.status,
+          data_compra: updateVehicleData.data_compra,
+          data_venda: updateVehicleData.data_venda,
+          imagens: updateVehicleData.imagens,
+        },
+        $push: { gastos: { $each: updateVehicleData.gastos } },
+      }
     );
 
     if (result.modifiedCount > 0) {
@@ -217,6 +289,53 @@ app.delete("/vehicles/:id", async (req, res) => {
     } else {
       res.send({ message: "Nenhum veículo excluído" });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Erro interno do servidor");
+  } finally {
+    await client.close();
+  }
+});
+
+app.delete("/vehicles/:vehicleId/gastos/:gastoId", async (req, res) => {
+  const vehicleId = req.params.vehicleId;
+  const gastoId = req.params.gastoId;
+
+  try {
+    await client.connect();
+    const database = client.db("Revenda");
+    const collection = database.collection("vehicles");
+
+    const objectId = ObjectId.isValid(vehicleId)
+      ? new ObjectId(vehicleId)
+      : vehicleId;
+
+    const existingVehicle = await collection.findOne({
+      _id: objectId,
+    });
+
+    if (!existingVehicle) {
+      res.status(404).send({ message: "Veículo não encontrado" });
+      return;
+    }
+
+    const gastoIndex = existingVehicle.gastos.findIndex(
+      (gasto) => gasto.id === gastoId
+    );
+
+    if (gastoIndex === -1) {
+      res.status(404).send({ message: "Gasto não encontrado" });
+      return;
+    }
+
+    existingVehicle.gastos.splice(gastoIndex, 1);
+
+    await collection.updateOne(
+      { _id: objectId },
+      { $set: { gastos: existingVehicle.gastos } }
+    );
+
+    res.send({ message: "Gasto removido" });
   } catch (error) {
     console.log(error);
     res.status(500).send("Erro interno do servidor");
