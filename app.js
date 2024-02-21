@@ -1,5 +1,5 @@
 const express = require("express");
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient, ObjectId, ReturnDocument } = require("mongodb");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const path = require("path");
@@ -27,40 +27,64 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+//  CONECTAR COM O BANCO
+const connectToDatabase = async () => {
+  await client.connect();
+  return client;
+};
+
+const closeDatabaseConnection = async (client) => {
+  if (client) {
+    await client.close();
+  }
+};
+
+const handleError = (res, statusCode, message) => {
+  return res.status(statusCode).send({ message });
+};
+
+// alterar para estoque
 app.get("/vehicles", async (req, res) => {
+  let client;
+
   try {
-    await client.connect();
+    client = await connectToDatabase();
+
     const database = client.db("Revenda");
     const collection = database.collection("vehicles");
 
     const { marca, placa, modelo, ano, cor, status, valorMin, valorMax } =
       req.query;
 
+    if (ano && isNaN(parseInt(ano, 10))) {
+      return handleError(res, 400, "O ano deve ser um número válido");
+    }
+
+    if (
+      valorMin &&
+      valorMax &&
+      isNaN(parseInt(valorMin, 10) || isNaN(parseInt(valorMax, 10)))
+    ) {
+      return handleError(
+        res,
+        400,
+        "Os valores mínimo e máximo devem ser números válidos"
+      );
+    }
+
     const filter = {};
 
-    if (marca) {
-      filter.marca = marca;
-    }
+    if (marca) filter.marca = marca;
 
-    if (placa) {
-      filter.placa = placa;
-    }
+    if (placa) filter.placa = placa;
 
-    if (modelo) {
-      filter.modelo = modelo;
-    }
+    if (modelo) filter.modelo = modelo;
 
-    if (ano) {
-      filter.ano = parseInt(ano, 10);
-    }
+    if (ano) filter.ano = parseInt(ano, 10);
 
-    if (cor) {
-      filter.cor = cor;
-    }
+    if (cor) filter.cor = cor;
 
-    if (status) {
-      filter.status = status;
-    }
+    if (status) filter.status = status;
 
     if (valorMin && valorMax) {
       filter.valor_venda = {
@@ -74,55 +98,50 @@ app.get("/vehicles", async (req, res) => {
     if (vehicles.length === 0) {
       return res.status(404).send({ message: "Nenhum veículo encontrado" });
     }
-
     res.send(vehicles);
   } catch (error) {
     console.log(error);
-    res.status(500).send("Erro interno do servidor");
+    handleError(res, 500, "Erro interno do servidor");
   } finally {
-    await client.close();
+    await closeDatabaseConnection(client);
   }
 });
 
+// Separar em um função externa
+// Usuario nao pode buscar por vendidos(status)
+const buildFilter = (query) => {
+  const { marca, modelo, ano, cor, status, valorMin, valorMax } = query;
+
+  const filter = {};
+
+  if (marca) filter.marca = marca;
+  if (modelo) filter.modelo = modelo;
+  if (ano) filter.ano = parseInt(ano, 10);
+  if (cor) filter.cor = cor;
+  if (status) filter.status = status;
+
+  if (valorMin && valorMax) {
+    filter.valor_venda = {
+      $gte: parseInt(valorMin, 10),
+      $lte: parseInt(valorMax, 10),
+    };
+  }
+
+  return filter;
+};
+
+//Remover 
 app.get("/vehicles-available", async (req, res) => {
+  let client;
+
   try {
-    await client.connect();
+    client = await connectToDatabase();
     const database = client.db("Revenda");
     const collection = database.collection("vehicles");
-    const { marca, placa, modelo, ano, cor, status, valorMin, valorMax } =
-      req.query;
 
-    const filter = {};
+    const baseFilter = buildFilter(req.query);
 
-    if (marca) {
-      filter.marca = marca;
-    }
-
-    if (modelo) {
-      filter.modelo = modelo;
-    }
-
-    if (ano) {
-      filter.ano = parseInt(ano, 10);
-    }
-
-    if (cor) {
-      filter.cor = cor;
-    }
-
-    if (status) {
-      filter.status = status;
-    }
-
-    if (valorMin && valorMax) {
-      filter.valor_venda = {
-        $gte: parseInt(valorMin, 10),
-        $lte: parseInt(valorMax, 10),
-      };
-    }
-
-    // Adicionar o filtro para veículos disponíveis
-    filter.status = "Disponível";
+    const filter = { ...baseFilter, status: "Disponível" };
 
     const vehicles = await collection.find(filter).toArray();
 
@@ -133,9 +152,9 @@ app.get("/vehicles-available", async (req, res) => {
     res.send(vehicles);
   } catch (error) {
     console.log(error);
-    res.status(500).send("Erro interno do servidor");
+    handleError(res, 500, "Erro interno do servidor");
   } finally {
-    await client.close();
+    await closeDatabaseConnection(client);
   }
 });
 
@@ -168,7 +187,7 @@ app.get("/vehicles/:id", async (req, res) => {
   }
 });
 
-// converter para minusculas antes de salvar no banco
+// converter dados do carro para minusculas antes de salvar no banco
 app.post("/vehicles", upload.array("images", 12), async (req, res) => {
   const newVehicle = req.body;
   const images = req.files.map((file) => file.filename);
