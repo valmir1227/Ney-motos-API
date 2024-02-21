@@ -4,14 +4,17 @@ const {
   connectToDatabase,
   closeDatabaseConnection,
 } = require("./src/config/database");
-const vehicleRoutes = require("./src/routes/vehicleRoutes");
-require("dotenv").config();
 
+const vehicleRoutes = require("./src/routes/vehiclesRoutes");
+const clientsRoutes = require("./src/routes/clientsRoutes");
+
+require("dotenv").config();
 const app = express();
 app.use(bodyParser.json());
 connectToDatabase();
 
 app.use(vehicleRoutes);
+app.use(clientsRoutes);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

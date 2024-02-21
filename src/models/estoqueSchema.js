@@ -52,7 +52,7 @@ const vehicleSchema = new mongoose.Schema({
   observacao: { type: String },
   status: {
     type: String,
-    enum: ["Disponivel", "Reservado"],
+    enum: ["Disponivel", "Reservado", "Vendido"],
     default: "Disponivel",
     required: true,
   },
