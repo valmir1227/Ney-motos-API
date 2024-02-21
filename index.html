@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enviar Dados para API</title>
+</head>
+<body>
+  <form id="vehicleForm" enctype="multipart/form-data"> <!-- Adicionado enctype="multipart/form-data" para suportar envio de arquivos -->
+    <!-- Campos existentes -->
+    <label for="marca">Marca:</label>
+    <input type="text" id="marca" name="marca" required /><br />
+
+    <label for="modelo">Modelo:</label>
+    <input type="text" id="modelo" name="modelo" required /><br />
+
+    <label for="anoFabricacao">Ano de Fabricação:</label>
+    <input type="number" id="anoFabricacao" name="ano_fabricacao" required /><br />
+
+    <label for="anoModelo">Ano do Modelo:</label>
+    <input type="number" id="anoModelo" name="ano_modelo" required /><br />
+
+    <label for="tipoMoto">Tipo de Moto:</label>
+    <select id="tipoMoto" name="tipo_moto" required>
+      <option value="esportiva">Esportiva</option>
+      <option value="cruiser">Cruiser</option>
+      <option value="touring">Touring</option>
+      <option value="off road">Off Road</option>
+      <option value="outro">Outro</option>
+    </select><br />
+
+    <label for="cor">Cor:</label>
+    <input type="text" id="cor" name="cor" required /><br />
+
+    <label for="placa">Placa:</label>
+    <input type="text" id="placa" name="placa" required /><br />
+
+    <label for="quilometragem">Quilometragem:</label>
+    <input type="number" id="quilometragem" name="quilometragem" required /><br />
+
+    <label for="precoVenda">Preço de Venda:</label>
+    <input type="number" id="precoVenda" name="preco_venda" required /><br />
+
+    <label for="precoCompra">Preço de Compra:</label>
+    <input type="number" id="precoCompra" name="preco_compra" required /><br />
+
+    <label for="dataEntrada">Data de Entrada:</label>
+    <input type="date" id="dataEntrada" name="data_entrada" /><br />
+
+    <label for="dataVenda">Data de Venda:</label>
+    <input type="date" id="dataVenda" name="data_venda" /><br />
+
+    <label for="capacidadeMotor">Capacidade do Motor:</label>
+    <input type="text" id="capacidadeMotor" name="capacidade_motor" /><br />
+
+    <label for="tipoCombustivel">Tipo de Combustível:</label>
+    <input type="text" id="tipoCombustivel" name="tipo_combustivel" /><br />
+
+    <label for="sistemaFreios">Sistema de Freios:</label>
+    <input type="text" id="sistemaFreios" name="sistema_freios" /><br />
+
+    <label for="extras">Extras:</label>
+    <input type="text" id="extras" name="extras" /><br />
+
+    <label for="imagens">Imagens:</label>
+    <input type="file" id="imagens" name="imagens" accept="image/*" multiple required /><br /> <!-- Adicionado input file para imagens -->
+
+    <label for="descricao">Descrição:</label>
+    <textarea id="descricao" name="descricao"></textarea><br />
+
+    <label for="observacao">Observação:</label>
+    <textarea id="observacao" name="observacao"></textarea><br />
+
+    <!-- Novo campo -->
+    <label for="status">Status:</label>
+    <select id="status" name="status" required>
+      <option value="Disponivel">Disponível</option>
+      <option value="Reservado">Reservado</option>
+    </select><br />
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    document.getElementById("vehicleForm").addEventListener("submit", function (event) {
+      event.preventDefault(); // Evita que o formulário seja submetido normalmente
+
+      const formData = new FormData(this);
+
+      fetch("http://localhost:3000/estoque", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Ocorreu um erro ao enviar os dados.");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Dados enviados com sucesso:", data);
+          // Faça o que for necessário após enviar os dados com sucesso
+        })
+        .catch((error) => {
+          console.error("Erro:", error);
+        });
+    });
+  </script>
+</body>
+</html>
