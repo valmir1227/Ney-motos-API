@@ -7,6 +7,7 @@ const {
 
 const vehicleRoutes = require("./src/routes/vehiclesRoutes");
 const clientsRoutes = require("./src/routes/clientsRoutes");
+const vendasRoutes = require("./src/routes/vendasRoutes");
 
 require("dotenv").config();
 const app = express();
@@ -15,6 +16,7 @@ connectToDatabase();
 
 app.use(vehicleRoutes);
 app.use(clientsRoutes);
+app.use(vendasRoutes);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

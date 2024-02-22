@@ -34,7 +34,16 @@ exports.createClient = async (req, res) => {
 
 exports.getClients = async (req, res) => {
   try {
-    const clients = await Client.find({});
+    const { nome_completo } = req.query;
+    const filter = {};
+
+    if (nome_completo) {
+      filter.nome_completo = new RegExp('^' + nome_completo, 'i');
+    }
+
+    console.log(filter);
+
+    const clients = await Client.find(filter);
 
     if (clients.length === 0) {
       return res.status(404).send({ message: "Nenhum cliente encontrado" });

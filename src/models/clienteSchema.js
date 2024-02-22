@@ -12,7 +12,7 @@ const clienteSchema = new mongoose.Schema({
   },
   cpf: { type: String },
   rg: { type: String },
-  veiculo_comprado: { type: mongoose.Schema.Types.ObjectId, ref: "Vehicle" }, // Referência ao ID do veículo comprado
+  veiculo_comprado: { type: mongoose.Schema.Types.ObjectId, ref: "Venda" }, // Referência ao ID do veículo comprado
 });
 
 const Client = mongoose.model("Clients", clienteSchema);
