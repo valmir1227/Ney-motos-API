@@ -24,3 +24,11 @@
 - [X] POST /vendas: Adiciona uma nova venda no banco de dados.
 - [X] PUT /vendas/{id}: Atualiza os dados de uma venda, por exemplo a data de venda.
 - [X] DELETE /vendas/{id}: Remove uma venda da base de dados.
+
+# Manutencoes
+
+- [X] GET /manutencoes: Retorna todas as manutenções realizadas.
+- [X] GET /manutencoes/{id}: Retorna os dados de uma manutenção específica com o ID fornecido.
+- [X] POST /manutencoes: Adiciona uma nova manutenção no banco de dados.
+- [X] PUT /manutencoes/{id}: Atualiza os dados de uma manutenção especifíca.
+- [X] DELETE /manutencoes/{id}: Remove uma manutenção da base de dados.
