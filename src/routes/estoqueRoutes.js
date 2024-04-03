@@ -28,7 +28,7 @@ router.post(
     if (req.files && req.files.length > 12) {
       return res
         .status(400)
-        .json({ message: "Você só pode enviar no máximo 12 imagens." });
+        .json({ message: "Você pode enviar no máximo 12 imagens." });
     }
     next();
   },

@@ -2,18 +2,10 @@ const { default: mongoose } = require("mongoose");
 const Vehicle = require("../models/estoqueSchema");
 
 exports.createVehicle = async (req, res) => {
-  const newVehicleData = req.body;
-
+  
   try {
-    const existingVehicle = await Vehicle.findOne({
-      placa: newVehicleData.placa,
-    });
-
-    if (existingVehicle) {
-      return res.status(400).send({ message: "Veículo já cadastrado" });
-    }
-
-    const images = req.files.map((file) => file.filename);
+    const newVehicleData = req.body;
+    const imagePaths = req.files.map((file) => file.path)
 
     const newVehicle = new Vehicle({
       marca: newVehicleData.marca,
@@ -22,24 +14,17 @@ exports.createVehicle = async (req, res) => {
       ano_modelo: newVehicleData.ano_modelo,
       tipo_moto: newVehicleData.tipo_moto,
       cor: newVehicleData.cor,
-      placa: newVehicleData.placa,
       quilometragem: newVehicleData.quilometragem,
-      preco_venda: newVehicleData.preco_venda,
-      preco_compra: newVehicleData.preco_compra,
-      data_entrada: newVehicleData.data_entrada,
-      data_venda: newVehicleData.data_venda,
+      preco: newVehicleData.preco,
       capacidade_motor: newVehicleData.capacidade_motor,
       tipo_combustivel: newVehicleData.tipo_combustivel,
       sistema_freios: newVehicleData.sistema_freios,
-      extras: newVehicleData.extras,
-      imagens: images,
-      descricao: newVehicleData.descricao,
-      observacao: newVehicleData.observacao,
+      imagens: imagePaths,
       status: newVehicleData.status,
     });
 
     await newVehicle.save();
-    res.status(201).send({ message: "Veículo adicionado com sucesso" });
+    res.status(201).send({ message: "Veículo cadastrado com sucesso" });
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Erro interno do servidor" });
@@ -48,14 +33,12 @@ exports.createVehicle = async (req, res) => {
 
 exports.getEstoque = async (req, res) => {
   try {
-    const { marca, placa, modelo, ano_modelo, cor, valorMin, valorMax } =
+    const { marca, modelo, ano_modelo, cor, valorMin, valorMax } =
       req.query;
 
     const filter = {};
 
     if (marca) filter.marca = marca;
-
-    if (placa) filter.placa = placa;
 
     if (modelo) filter.modelo = modelo;
 
@@ -100,6 +83,10 @@ exports.getVehicleById = async (req, res) => {
   }
 };
 
+
+//Verificar se o update nao vai com campos vazios
+//(deve manter os campos que nao foram alterados) 
+//uma estrategia é usar o front end para manter os estados
 exports.updateVehicle = async (req, res) => {
   const vehicleId = req.params.id;
   const updateVehicleData = req.body;
@@ -117,18 +104,11 @@ exports.updateVehicle = async (req, res) => {
         ano_modelo: updateVehicleData.ano_modelo,
         tipo_moto: updateVehicleData.tipo_moto,
         cor: updateVehicleData.cor,
-        placa: updateVehicleData.placa,
         quilometragem: updateVehicleData.quilometragem,
-        preco_venda: updateVehicleData.preco_venda,
-        preco_compra: updateVehicleData.preco_compra,
-        data_entrada: updateVehicleData.data_entrada,
-        data_venda: updateVehicleData.data_venda,
+        preco: updateVehicleData.preco,
         capacidade_motor: updateVehicleData.capacidade_motor,
         tipo_combustivel: updateVehicleData.tipo_combustivel,
         sistema_freios: updateVehicleData.sistema_freios,
-        extras: updateVehicleData.extras,
-        descricao: updateVehicleData.descricao,
-        observacao: updateVehicleData.observacao,
         status: updateVehicleData.status,
         imagens: updateVehicleData.imagens,
       },

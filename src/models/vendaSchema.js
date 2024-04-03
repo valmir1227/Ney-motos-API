@@ -14,7 +14,6 @@ const vendaSchema = new mongoose.Schema({
       ano_modelo: { type: Number, required: true },
       tipo_moto: { type: String, required: true },
       cor: { type: String, required: true },
-      placa: { type: String, required: true },
       quilometragem: { type: Number, required: true },
       preco_compra: { type: Number, required: true },
       data_entrada: { type: Date, required: true },

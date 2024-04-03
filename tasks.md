@@ -32,3 +32,5 @@
 - [X] POST /manutencoes: Adiciona uma nova manutenção no banco de dados.
 - [X] PUT /manutencoes/{id}: Atualiza os dados de uma manutenção especifíca.
 - [X] DELETE /manutencoes/{id}: Remove uma manutenção da base de dados.
+
+[] Renomear objeto MOTO por VEHICLE

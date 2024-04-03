@@ -32,23 +32,12 @@
     <label for="cor">Cor:</label>
     <input type="text" id="cor" name="cor" required /><br />
 
-    <label for="placa">Placa:</label>
-    <input type="text" id="placa" name="placa" required /><br />
 
     <label for="quilometragem">Quilometragem:</label>
     <input type="number" id="quilometragem" name="quilometragem" required /><br />
 
-    <label for="precoVenda">Preço de Venda:</label>
-    <input type="number" id="precoVenda" name="preco_venda" required /><br />
-
-    <label for="precoCompra">Preço de Compra:</label>
-    <input type="number" id="precoCompra" name="preco_compra" required /><br />
-
-    <label for="dataEntrada">Data de Entrada:</label>
-    <input type="date" id="dataEntrada" name="data_entrada" /><br />
-
-    <label for="dataVenda">Data de Venda:</label>
-    <input type="date" id="dataVenda" name="data_venda" /><br />
+    <label for="preco">Preço de Compra:</label>
+    <input type="number" id="preco" name="preco" required /><br />
 
     <label for="capacidadeMotor">Capacidade do Motor:</label>
     <input type="text" id="capacidadeMotor" name="capacidade_motor" /><br />
@@ -59,17 +48,8 @@
     <label for="sistemaFreios">Sistema de Freios:</label>
     <input type="text" id="sistemaFreios" name="sistema_freios" /><br />
 
-    <label for="extras">Extras:</label>
-    <input type="text" id="extras" name="extras" /><br />
-
     <label for="imagens">Imagens:</label>
     <input type="file" id="imagens" name="imagens" accept="image/*" multiple required /><br /> <!-- Adicionado input file para imagens -->
-
-    <label for="descricao">Descrição:</label>
-    <textarea id="descricao" name="descricao"></textarea><br />
-
-    <label for="observacao">Observação:</label>
-    <textarea id="observacao" name="observacao"></textarea><br />
 
     <!-- Novo campo -->
     <label for="status">Status:</label>
@@ -87,7 +67,7 @@
 
       const formData = new FormData(this);
 
-      fetch("http://localhost:3000/estoque", {
+      fetch("http://localhost:3333/estoque", {
         method: "POST",
         body: formData,
       })

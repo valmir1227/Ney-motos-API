@@ -19,7 +19,6 @@ exports.createVenda = async (req, res) => {
         id_moto: motoEstoque._id,
         marca: motoEstoque.marca,
         status: motoEstoque.status,
-        placa: motoEstoque.placa,
         modelo: motoEstoque.modelo,
         ano_fabricacao: motoEstoque.ano_fabricacao,
         ano_modelo: motoEstoque.ano_modelo,

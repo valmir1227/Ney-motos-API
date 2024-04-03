@@ -38,16 +38,12 @@ const vehicleSchema = new mongoose.Schema({
     required: true,
   },
   cor: { type: String, required: true },
-  placa: { type: String, required: true, unique: true },
   quilometragem: { type: Number, required: true },
-  preco_compra: { type: Number, required: true },
+  preco: { type: Number, required: true },
   data_entrada: { type: Date, default: Date.now },
   capacidade_motor: { type: String },
   tipo_combustivel: { type: String },
   sistema_freios: { type: String },
-  extras: { type: [String] }, // Pode ser um array de strings para armazenar acessórios adicionais
-  descricao: { type: String },
-  observacao: { type: String },
   status: {
     type: String,
     enum: ["Disponivel", "Reservado", "Vendido"],
