@@ -2,10 +2,9 @@ const { default: mongoose } = require("mongoose");
 const Vehicle = require("../models/estoqueSchema");
 
 exports.createVehicle = async (req, res) => {
-  
   try {
     const newVehicleData = req.body;
-    const imagePaths = req.files.map((file) => file.path)
+    const imagePaths = req.files.map((file) => file.path);
 
     const newVehicle = new Vehicle({
       marca: newVehicleData.marca,
@@ -33,24 +32,33 @@ exports.createVehicle = async (req, res) => {
 
 exports.getEstoque = async (req, res) => {
   try {
-    const { marca, modelo, ano_modelo, cor, valorMin, valorMax } =
-      req.query;
+    const { marca, tipo_moto, valorMin, valorMax, anoMax, search } = req.query;
 
     const filter = {};
 
     if (marca) filter.marca = marca;
 
-    if (modelo) filter.modelo = modelo;
+    if (tipo_moto) filter.tipo_moto = tipo_moto;
 
-    if (ano_modelo) filter.ano_modelo = ano_modelo;
-
-    if (cor) filter.cor = cor;
+    if (anoMax) {
+      filter.ano_modelo = {
+        $lte: parseInt(anoMax),
+      };
+    }
 
     if (valorMin && valorMax) {
       filter.preco_venda = {
         $gte: parseInt(valorMin),
         $lte: parseInt(valorMax),
       };
+    }
+
+    if (search) {
+      filter.$or = [
+        { marca: { $regex: search, $options: "i" } },
+        { modelo: { $regex: search, $options: "i" } },
+        { tipo_moto: { $regex: search, $options: "i" } },
+      ];
     }
 
     const vehicles = await Vehicle.find(filter);
@@ -83,9 +91,8 @@ exports.getVehicleById = async (req, res) => {
   }
 };
 
-
 //Verificar se o update nao vai com campos vazios
-//(deve manter os campos que nao foram alterados) 
+//(deve manter os campos que nao foram alterados)
 //uma estrategia é usar o front end para manter os estados
 exports.updateVehicle = async (req, res) => {
   const vehicleId = req.params.id;

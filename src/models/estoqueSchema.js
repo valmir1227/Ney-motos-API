@@ -25,7 +25,7 @@ const vehicleSchema = new mongoose.Schema({
       "esportiva",
       "cruiser",
       "touring",
-      "off road",
+      "offroad",
       "scooter",
       "street",
       "naked",
@@ -50,7 +50,7 @@ const vehicleSchema = new mongoose.Schema({
     default: "Disponivel",
     required: true,
   },
-  imagens: { type: [String], required: true }, // Array de URLs das imagens
+  imagens: { type: [String], required: true },
 });
 
 const Vehicle = mongoose.model("estoque", vehicleSchema, "estoque");
