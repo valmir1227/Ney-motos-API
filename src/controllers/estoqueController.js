@@ -47,7 +47,7 @@ exports.getEstoque = async (req, res) => {
     }
 
     if (valorMin && valorMax) {
-      filter.preco_venda = {
+      filter.preco = {
         $gte: parseInt(valorMin),
         $lte: parseInt(valorMax),
       };
@@ -91,9 +91,6 @@ exports.getVehicleById = async (req, res) => {
   }
 };
 
-//Verificar se o update nao vai com campos vazios
-//(deve manter os campos que nao foram alterados)
-//uma estrategia é usar o front end para manter os estados
 exports.updateVehicle = async (req, res) => {
   const vehicleId = req.params.id;
   const updateVehicleData = req.body;
