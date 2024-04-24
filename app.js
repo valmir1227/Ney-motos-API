@@ -1,19 +1,25 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+require("dotenv").config();
 const {
   connectToDatabase,
   closeDatabaseConnection,
 } = require("./src/config/database");
-const vehicleRoutes = require("./src/routes/vehicleRoutes");
-require("dotenv").config();
+
+const estoqueRoutes = require("./src/routes/estoqueRoutes");
+const vendasRoutes = require("./src/routes/vendasRoutes");
+const authRoutes = require("./src/routes/authRoutes");
 
 const app = express();
 app.use(bodyParser.json());
 connectToDatabase();
 
-app.use(vehicleRoutes);
+app.use(estoqueRoutes);
+app.use("/uploads", express.static("uploads"));
+app.use(vendasRoutes);
+app.use(authRoutes);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3333;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

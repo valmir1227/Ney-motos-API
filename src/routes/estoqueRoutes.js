@@ -4,7 +4,6 @@ const estoqueController = require("../controllers/estoqueController");
 const multer = require("multer");
 const path = require("path");
 
-// Validar no front para o user enviar no maximo 12 imagens.
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -28,7 +27,7 @@ router.post(
     if (req.files && req.files.length > 12) {
       return res
         .status(400)
-        .json({ message: "Você só pode enviar no máximo 12 imagens." });
+        .json({ message: "Você pode enviar no máximo 12 imagens."});
     }
     next();
   },
