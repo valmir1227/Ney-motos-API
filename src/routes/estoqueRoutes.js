@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const estoqueController = require("../controllers/estoqueController");
+const authenticate = require("../midleware/authenticate");
 const multer = require("multer");
 const path = require("path");
 
@@ -27,7 +28,7 @@ router.post(
     if (req.files && req.files.length > 12) {
       return res
         .status(400)
-        .json({ message: "Você pode enviar no máximo 12 imagens."});
+        .json({ message: "Você pode enviar no máximo 12 imagens." });
     }
     next();
   },
@@ -36,7 +37,7 @@ router.post(
 );
 router.get("/estoque", estoqueController.getEstoque);
 router.get("/estoque/:id", estoqueController.getVehicleById);
-router.put("/estoque/:id", estoqueController.updateVehicle);
-router.delete("/estoque/:id", estoqueController.deleteVehicle);
+router.put("/estoque/:id", authenticate, estoqueController.updateVehicle);
+router.delete("/estoque/:id", authenticate, estoqueController.deleteVehicle);
 
 module.exports = router;
