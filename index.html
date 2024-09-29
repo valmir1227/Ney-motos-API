@@ -1,73 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enviar Dados para API</title>
+  <title>Ney Motos | Cadastrar Veículo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: auto;
+      width: 100vw;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      height: auto;
+    }
+
+    label {
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    input[type="file"]:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 600px) {
+      form {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      button {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <form id="vehicleForm" enctype="multipart/form-data"> <!-- Adicionado enctype="multipart/form-data" para suportar envio de arquivos -->
-    <!-- Campos existentes -->
-    <label for="marca">Marca:</label>
-    <input type="text" id="marca" name="marca" required /><br />
+  <div>
+    <h1>Cadastrar Novo Veículo</h1>
+    <form id="vehicleForm" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="marca">Marca:</label>
+        <select id="marca" name="marca" required>
+          <option value="Honda">Honda</option>
+          <option value="Yamaha">Yamaha</option>
+          <option value="Suzuki">Suzuki</option>
+          <option value="Kawasaki">Kawasaki</option>
+          <option value="Harley-Davidson">Harley-Davidson</option>
+          <option value="BMW">BMW</option>
+          <option value="Shineray">Shineray</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
 
-    <label for="modelo">Modelo:</label>
-    <input type="text" id="modelo" name="modelo" required /><br />
+      <div class="form-group">
+        <label for="modelo">Modelo:</label>
+        <input type="text" id="modelo" name="modelo" required />
+      </div>
 
-    <label for="anoFabricacao">Ano de Fabricação:</label>
-    <input type="number" id="anoFabricacao" name="ano_fabricacao" required /><br />
+      <div class="form-group">
+        <label for="anoFabricacao">Ano de Fabricação:</label>
+        <input type="number" id="anoFabricacao" name="ano_fabricacao" required />
+      </div>
 
-    <label for="anoModelo">Ano do Modelo:</label>
-    <input type="number" id="anoModelo" name="ano_modelo" required /><br />
+      <div class="form-group">
+        <label for="anoModelo">Ano do Modelo:</label>
+        <input type="number" id="anoModelo" name="ano_modelo" required />
+      </div>
 
-    <label for="tipoMoto">Tipo de Moto:</label>
-    <select id="tipoMoto" name="tipo_moto" required>
-      <option value="esportiva">Esportiva</option>
-      <option value="cruiser">Cruiser</option>
-      <option value="touring">Touring</option>
-      <option value="offroad">Off Road</option>
-      <option value="outro">Outro</option>
-    </select><br />
+      <div class="form-group">
+        <label for="tipoMoto">Tipo de Moto:</label>
+        <select id="tipoMoto" name="tipo_moto" required>
+          <option value="street">Street</option>
+          <option value="esportiva">Esportiva</option>
+          <option value="cruiser">Cruiser</option>
+          <option value="touring">Touring</option>
+          <option value="offroad">Off Road</option>
+          <option value="scooter">Scooter</option>
+          <option value="naked">Naked</option>
+          <option value="trail">Trail</option>
+          <option value="big trail">Big trail</option>
+          <option value="custom">Custom</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
 
-    <label for="cor">Cor:</label>
-    <input type="text" id="cor" name="cor" required /><br />
+      <div class="form-group">
+        <label for="cor">Cor:</label>
+        <input type="text" id="cor" name="cor" required />
+      </div>
 
+      <div class="form-group">
+        <label for="quilometragem">Quilometragem:</label>
+        <input type="number" id="quilometragem" name="quilometragem" required />
+      </div>
 
-    <label for="quilometragem">Quilometragem:</label>
-    <input type="number" id="quilometragem" name="quilometragem" required /><br />
+      <div class="form-group">
+        <label for="preco">Preço de Compra:</label>
+        <input type="number" id="preco" name="preco" required />
+      </div>
 
-    <label for="preco">Preço de Compra:</label>
-    <input type="number" id="preco" name="preco" required /><br />
+      <div class="form-group">
+        <label for="capacidadeMotor">Capacidade do Motor:</label>
+        <select id="capacidadeMotor" name="capacidade_motor" required>
+          <option value="100cc">100cc</option>
+          <option value="150cc">150cc</option>
+          <option value="160cc">160cc</option>
+          <option value="190cc">190cc</option>
+          <option value="200cc">200cc</option>
+          <option value="250cc">250cc</option>
+          <option value="300cc">300cc</option>
+        </select>
+      </div>
 
-    <label for="capacidadeMotor">Capacidade do Motor:</label>
-    <input type="text" id="capacidadeMotor" name="capacidade_motor" /><br />
+      <div class="form-group">
+        <label for="tipoCombustivel">Tipo de Combustível:</label>
+        <input type="text" id="tipoCombustivel" name="tipo_combustivel" />
+      </div>
 
-    <label for="tipoCombustivel">Tipo de Combustível:</label>
-    <input type="text" id="tipoCombustivel" name="tipo_combustivel" /><br />
+      <div class="form-group">
+        <label for="sistemaFreios">Sistema de Freios:</label>
+        <input type="text" id="sistemaFreios" name="sistema_freios" />
+      </div>
 
-    <label for="sistemaFreios">Sistema de Freios:</label>
-    <input type="text" id="sistemaFreios" name="sistema_freios" /><br />
+      <div class="form-group">
+        <label for="imagens">Imagens:</label>
+        <input type="file" id="imagens" name="imagens" accept="image/*" multiple required />
+      </div>
 
-    <label for="imagens">Imagens:</label>
-    <input type="file" id="imagens" name="imagens" accept="image/*" multiple required /><br /> <!-- Adicionado input file para imagens -->
+      <div class="form-group">
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+          <option value="Disponivel">Disponível</option>
+          <option value="Reservado">Reservado</option>
+          <option value="Vendido">Vendido</option>
+        </select>
+      </div>
 
-    <!-- Novo campo -->
-    <label for="status">Status:</label>
-    <select id="status" name="status" required>
-      <option value="Disponivel">Disponível</option>
-      <option value="Reservado">Reservado</option>
-    </select><br />
-
-    <button type="submit">Enviar</button>
-  </form>
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
 
   <script>
     document.getElementById("vehicleForm").addEventListener("submit", function (event) {
-      event.preventDefault(); // Evita que o formulário seja submetido normalmente
+      event.preventDefault();
 
       const formData = new FormData(this);
 
-      fetch("http://localhost:3333/estoque", {
+      fetch("https://neymotos-v1.onrender.com/estoque", {
         method: "POST",
         body: formData,
       })
@@ -79,7 +221,6 @@
         })
         .then((data) => {
           console.log("Dados enviados com sucesso:", data);
-          // Faça o que for necessário após enviar os dados com sucesso
         })
         .catch((error) => {
           console.error("Erro:", error);
@@ -87,4 +228,5 @@
     });
   </script>
 </body>
+
 </html>

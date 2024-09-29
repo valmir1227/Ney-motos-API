@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const estoqueController = require("../controllers/estoqueController");
-const authenticate = require("../midleware/authenticate");
 const multer = require("multer");
 const path = require("path");
 
@@ -37,7 +36,7 @@ router.post(
 );
 router.get("/estoque", estoqueController.getEstoque);
 router.get("/estoque/:id", estoqueController.getVehicleById);
-router.put("/estoque/:id", authenticate, estoqueController.updateVehicle);
-router.delete("/estoque/:id", authenticate, estoqueController.deleteVehicle);
+router.put("/estoque/:id", estoqueController.updateVehicle);
+router.delete("/estoque/:id", estoqueController.deleteVehicle);
 
 module.exports = router;
